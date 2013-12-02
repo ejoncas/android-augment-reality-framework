@@ -98,4 +98,58 @@ public class RestoARApiService implements RestoARService {
         return ad;
     }
 
+	@Override
+	public List<String> getCategories() {
+		// TODO llamar al servicio que va a crear chipi
+		List<String> categories = new ArrayList<String>();
+		categories.add("Alemana");
+		categories.add("Arabe");
+		categories.add("Armenia");
+		categories.add("Autóctona");
+		categories.add("Brasilera");
+		categories.add("Casera");
+		categories.add("Chilena");
+		categories.add("China");
+		categories.add("Colombiana");
+		categories.add("Coreana");
+		categories.add("Croata"); 
+		categories.add("Cubana");
+		categories.add("De");
+		categories.add("Deli");
+		categories.add("Española");
+		categories.add("Francesa");
+		categories.add("Griega");
+		categories.add("Húngara");
+		categories.add("India");
+		categories.add("Inglesa");
+		categories.add("Internacional");
+		categories.add("Irlandesa");
+		categories.add("Italiana");
+		categories.add("Japonesa");
+		categories.add("Judía");
+		categories.add("Latinoamericana");
+		categories.add("Macrobiótica");
+		categories.add("Mediterránea");
+		categories.add("Mexicana");
+		categories.add("Natural");
+		categories.add("Nórdica");
+		categories.add("Norteamericana");
+		categories.add("Parrilla");
+		categories.add("Peruana");
+		categories.add("Pescados");
+		categories.add("Pizza");
+		categories.add("Polaca");
+		categories.add("Porteña");
+		categories.add("Portuguesa");
+		categories.add("Rusa"); 
+		categories.add("Sudeste");
+		categories.add("Suiza");
+		categories.add("Uruguaya");
+		categories.add("Variada");
+		categories.add("Vasca");
+		categories.add("Vegetariana");
+		categories.add("Venezolana");
+		return categories;
+	}
+
 }

@@ -10,18 +10,6 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import com.restoar.R;
-import com.restoar.data.ARData;
-import com.restoar.data.GooglePlacesDataSource;
-import com.restoar.data.LocalDataSource;
-import com.restoar.data.NetworkDataSource;
-import com.restoar.data.MockedRestoARDataSource;
-import com.restoar.data.RestoARDataSource;
-import com.restoar.data.TwitterDataSource;
-import com.restoar.data.WikipediaDataSource;
-import com.restoar.ui.Marker;
-import com.restoar.widget.VerticalTextView;
-
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
@@ -33,6 +21,14 @@ import android.view.MenuItem;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import com.restoar.R;
+import com.restoar.data.ARData;
+import com.restoar.data.LocalDataSource;
+import com.restoar.data.NetworkDataSource;
+import com.restoar.data.RestoARDataSource;
+import com.restoar.ui.Marker;
+import com.restoar.widget.VerticalTextView;
 
 /**
  * This class extends the AugmentedReality and is designed to be an example on
@@ -77,7 +73,6 @@ public class AugmentedRealityActivity extends AugmentedReality {
         ARData.addMarkers(localData.getMarkers());
 
         sources.put("restoarDataSource", new RestoARDataSource(getResources()));
-//        ARData.addMarkers(new MockedRestoARDataSource().getMarkers());
     }
 
     /**

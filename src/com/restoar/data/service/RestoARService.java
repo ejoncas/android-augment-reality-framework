@@ -8,4 +8,5 @@ public interface RestoARService {
 	
 	List<Advertisement> getAdvertisements();
 
+	List<String> getCategories();
 }

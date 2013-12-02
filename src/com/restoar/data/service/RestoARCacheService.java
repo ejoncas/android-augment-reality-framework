@@ -12,6 +12,7 @@ import com.restoar.model.Advertisement;
 public class RestoARCacheService implements RestoARService {
 
 	private static final String ALL_ADS_KEY = "ALL_ADS";
+	private static final String CATEGORIES = "CATEGORIES";
 	private RestoARService cachedService;
 	
 	private static RestoARCacheService INSTANCE = null;
@@ -37,21 +38,33 @@ public class RestoARCacheService implements RestoARService {
 				@Override
 				public Object load(String arg0) throws Exception {
 					if (ALL_ADS_KEY.equalsIgnoreCase(arg0)) {
-						cachedService.getAdvertisements();
+						return cachedService.getAdvertisements();
+					}
+					if (CATEGORIES.equalsIgnoreCase(arg0)) {
+						return cachedService.getCategories();
 					}
 					return null;
 				}
 			});
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Advertisement> getAdvertisements() {
+		return getSafe(ALL_ADS_KEY);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <T> T getSafe(String key) {
 		try {
-			return (List<Advertisement>) cache.get(ALL_ADS_KEY);
+			return (T) cache.get(key);
 		} catch (ExecutionException e) {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	@Override
+	public List<String> getCategories() {
+		return getSafe(CATEGORIES);
 	}
 
 }
