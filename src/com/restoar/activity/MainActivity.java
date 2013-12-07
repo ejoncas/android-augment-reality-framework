@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -30,8 +31,11 @@ import android.widget.ListView;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.restoar.R;
 import com.restoar.data.service.RestoARCacheService;
+import com.restoar.data.service.RestoARService;
 import com.restoar.model.Advertisement;
 
 public class MainActivity extends FragmentActivity implements
@@ -183,11 +187,32 @@ public class MainActivity extends FragmentActivity implements
 
 			ListView list = (ListView) rootView
 					.findViewById(R.id.listCategories);
+			Map<String,List<Advertisement>> adsMap = buildAdsByCategoryMap();
+			
 			final StableArrayAdapter adapter = new StableArrayAdapter(context,
-					android.R.layout.simple_list_item_1, RestoARCacheService
-							.getINSTANCE().getCategories());
+					android.R.layout.simple_list_item_1, buildLabels(adsMap));
 			list.setAdapter(adapter);
 			return rootView;
+		}
+		
+		private List<String> buildLabels(Map<String,List<Advertisement>> map) {
+			List<String> labels = Lists.newArrayList();
+			for(String cat: map.keySet()) { 
+				labels.add(cat + " ("+ map.get(cat).size() + ")");
+			}
+			return labels;
+		}
+
+		private Map<String, List<Advertisement>> buildAdsByCategoryMap() {
+			Map<String, List<Advertisement>> result = Maps.newHashMap();
+			RestoARService service = RestoARCacheService.getINSTANCE();
+			for(String category : service.getCategories()) {
+				result.put(category, new ArrayList<Advertisement>());
+			}
+			for(Advertisement ad : service.getAdvertisements()) { 
+				result.get(ad.getCategory()).add(ad);
+			}
+			return result;
 		}
 
 		@Override

@@ -14,14 +14,15 @@ public class RestoARCacheService implements RestoARService {
 	private static final String ALL_ADS_KEY = "ALL_ADS";
 	private static final String CATEGORIES = "CATEGORIES";
 	private RestoARService cachedService;
-	
+
 	private static RestoARCacheService INSTANCE = null;
-	
+	private LoadingCache<String, Object> cache;
+
 	public synchronized static RestoARCacheService getINSTANCE() {
-		 if (INSTANCE == null) {
-			 INSTANCE = new RestoARCacheService();
-		 }
-		 return INSTANCE;
+		if (INSTANCE == null) {
+			INSTANCE = new RestoARCacheService();
+		}
+		return INSTANCE;
 	}
 
 	public RestoARCacheService(RestoARService cachedService) {
@@ -29,29 +30,28 @@ public class RestoARCacheService implements RestoARService {
 	}
 
 	public RestoARCacheService() {
-		this.cachedService = new RestoARApiService();
+		this(new RestoARApiService());
+		this.cache = CacheBuilder.newBuilder()
+				.expireAfterWrite(10, TimeUnit.MINUTES)
+				.build(new CacheLoader<String, Object>() {
+					@Override
+					public Object load(String arg0) throws Exception {
+						if (ALL_ADS_KEY.equalsIgnoreCase(arg0)) {
+							return cachedService.getAdvertisements();
+						}
+						if (CATEGORIES.equalsIgnoreCase(arg0)) {
+							return cachedService.getCategories();
+						}
+						return null;
+					}
+				});
 	}
-
-	private LoadingCache<String, Object> cache = CacheBuilder.newBuilder()
-			.expireAfterWrite(10, TimeUnit.MINUTES)
-			.build(new CacheLoader<String, Object>() {
-				@Override
-				public Object load(String arg0) throws Exception {
-					if (ALL_ADS_KEY.equalsIgnoreCase(arg0)) {
-						return cachedService.getAdvertisements();
-					}
-					if (CATEGORIES.equalsIgnoreCase(arg0)) {
-						return cachedService.getCategories();
-					}
-					return null;
-				}
-			});
 
 	@Override
 	public List<Advertisement> getAdvertisements() {
 		return getSafe(ALL_ADS_KEY);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public <T> T getSafe(String key) {
 		try {

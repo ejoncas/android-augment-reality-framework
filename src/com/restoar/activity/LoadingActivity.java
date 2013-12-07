@@ -2,7 +2,6 @@ package com.restoar.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import com.restoar.R;
@@ -22,15 +21,15 @@ public class LoadingActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_loading);
 		
-		new AsyncTask<Void, Void, Void>() {
-			@Override
-			protected Void doInBackground(Void... params) {
+//		new AsyncTask<Void, Void, Void>() {
+//			@Override
+//			protected Void doInBackground(Void... params) {
 				load();
 				next();
-				return null;
-			}
-			
-		}.execute();
+//				return null;
+//			}
+//			
+//		}.execute();
 	}
 	
 	private void next() {
@@ -40,7 +39,9 @@ public class LoadingActivity extends Activity {
 	}
 	
 	public void load() {
-		RestoARCacheService.getINSTANCE().getAdvertisements();
+		RestoARCacheService instance = RestoARCacheService.getINSTANCE();
+		instance.getAdvertisements();
+		instance.getCategories();
 	}
 
 }

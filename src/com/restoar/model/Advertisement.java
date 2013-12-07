@@ -4,15 +4,17 @@ public class Advertisement {
 	
 	private String title;
 	private String description;
+	private String category;
 	private Double latitude;
 	private Double longitude;
 	
 	
-	public Advertisement(String title, String description, Double latitude,
+	public Advertisement(String title, String description, String category, Double latitude,
 			Double longitude) {
 		super();
 		this.title = title;
 		this.description = description;
+		this.category = category;
 		this.latitude = latitude;
 		this.longitude = longitude;
 	}
@@ -40,7 +42,12 @@ public class Advertisement {
 	public void setLongitude(Double longitude) {
 		this.longitude = longitude;
 	}
-	
+	public String getCategory() {
+		return category;
+	}
+	public void setCategory(String category) {
+		this.category = category;
+	}
 	
 
 }
