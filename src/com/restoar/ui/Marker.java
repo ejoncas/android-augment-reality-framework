@@ -66,6 +66,7 @@ public class Marker implements Comparable<Marker> {
     private int color = Color.WHITE;
     // For tracking Markers which have no altitude
     private boolean noAltitude = false;
+    private String objectId;
 
     // Used to show exact GPS position
     private static boolean debugGpsPosition = false;
@@ -110,6 +111,15 @@ public class Marker implements Comparable<Marker> {
         if (altitude==0.0d) this.noAltitude = true;
         else this.noAltitude = false;
     }
+    
+    
+    public void setObjectId(String objectId) {
+		this.objectId = objectId;
+	}
+    
+    public String getObjectId() {
+		return objectId;
+	}
 
     /**
      * Get the name of the Marker.

@@ -10,6 +10,7 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
@@ -134,8 +135,11 @@ public class AugmentedRealityActivity extends AugmentedReality {
      */
     @Override
     protected void markerTouched(Marker marker) {
-        text.setText(marker.getName());
-        myToast.show();
+    	Intent intent = new Intent(getApplicationContext(), ViewAdActivity.class);
+    	intent.putExtra(ViewAdActivity.ID_PARAM, marker.getObjectId());
+    	startActivity(intent);
+//        text.setText(marker.getName());
+//        myToast.show();
     }
 
     /**

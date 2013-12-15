@@ -15,7 +15,7 @@
         android:text="Buscar por Etiquetas"/>
 
     <EditText
-        android:id="@+id/editText1"
+        android:id="@+id/searchField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/section_label"
@@ -28,11 +28,11 @@
     </EditText>
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/buttonBuscar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/editText1"
-        android:layout_below="@+id/editText1"
+        android:layout_alignLeft="@+id/searchField"
+        android:layout_below="@+id/searchField"
         android:layout_marginTop="18dp"
         android:text="Buscar" />
 

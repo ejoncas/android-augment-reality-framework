@@ -20,16 +20,8 @@ public class LoadingActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_loading);
-		
-//		new AsyncTask<Void, Void, Void>() {
-//			@Override
-//			protected Void doInBackground(Void... params) {
-				load();
-				next();
-//				return null;
-//			}
-//			
-//		}.execute();
+		load();
+		next();
 	}
 	
 	private void next() {
@@ -40,6 +32,7 @@ public class LoadingActivity extends Activity {
 	
 	public void load() {
 		RestoARCacheService instance = RestoARCacheService.getINSTANCE();
+		instance.getCommerces();
 		instance.getAdvertisements();
 		instance.getCategories();
 	}

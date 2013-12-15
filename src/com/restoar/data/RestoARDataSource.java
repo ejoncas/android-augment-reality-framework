@@ -110,7 +110,9 @@ public class RestoARDataSource extends NetworkDataSource {
             if (lat != null) {
             	String title = jo.getString("title");
             	String description = jo.getString("description");
+            	String id = jo.getString("id");
                 ma = new IconMarker(title + "\n" + description, lat, lon, 0, Color.RED, icon);
+                ma.setObjectId(id);
             }
         } catch (Exception e) {
             e.printStackTrace();

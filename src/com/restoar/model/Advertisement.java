@@ -1,22 +1,42 @@
 package com.restoar.model;
 
+import java.util.List;
+
+import com.google.common.collect.Lists;
+
 public class Advertisement {
 	
+	private String id;
 	private String title;
 	private String description;
-	private String category;
-	private Double latitude;
-	private Double longitude;
+	private List<String> tags;
 	
+	public Advertisement() {
+		this.tags = Lists.newArrayList();
+	}
 	
-	public Advertisement(String title, String description, String category, Double latitude,
-			Double longitude) {
+	public Advertisement(String id, String title, String description) {
 		super();
+		this.id = id;
 		this.title = title;
 		this.description = description;
-		this.category = category;
-		this.latitude = latitude;
-		this.longitude = longitude;
+		this.tags = Lists.newArrayList();
+	}
+	
+	public List<String> getTags() {
+		return tags;
+	}
+	
+	public void addTag(String tag) {
+		tags.add(tag);
+	}
+	
+	public String getId() {
+		return id;
+	}
+	
+	public void setId(String id) {
+		this.id = id;
 	}
 	public String getTitle() {
 		return title;
@@ -30,24 +50,4 @@ public class Advertisement {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public Double getLatitude() {
-		return latitude;
-	}
-	public void setLatitude(Double latitude) {
-		this.latitude = latitude;
-	}
-	public Double getLongitude() {
-		return longitude;
-	}
-	public void setLongitude(Double longitude) {
-		this.longitude = longitude;
-	}
-	public String getCategory() {
-		return category;
-	}
-	public void setCategory(String category) {
-		this.category = category;
-	}
-	
-
 }

@@ -3,7 +3,6 @@ package com.restoar.activity;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -25,18 +24,21 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.restoar.R;
+import com.restoar.activity.views.StableArrayAdapter;
 import com.restoar.data.service.RestoARCacheService;
-import com.restoar.data.service.RestoARService;
 import com.restoar.model.Advertisement;
+import com.restoar.model.PlainAdvertisement;
 
 public class MainActivity extends FragmentActivity implements
 		ActionBar.TabListener {
@@ -187,15 +189,26 @@ public class MainActivity extends FragmentActivity implements
 
 			ListView list = (ListView) rootView
 					.findViewById(R.id.listCategories);
-			Map<String,List<Advertisement>> adsMap = buildAdsByCategoryMap();
+			final Map<String,List<PlainAdvertisement>> adsMap = RestoARCacheService.getINSTANCE().getCategoriesMap();
 			
 			final StableArrayAdapter adapter = new StableArrayAdapter(context,
 					android.R.layout.simple_list_item_1, buildLabels(adsMap));
 			list.setAdapter(adapter);
+			list.setOnItemClickListener(new OnItemClickListener() {
+				@Override
+				public void onItemClick(AdapterView<?> arg0, View arg1,
+						int arg2, long arg3) {
+					String category = adapter.getItem(arg2);
+					String cat = category.substring(0, category.indexOf("(")).trim();
+					Intent intent = new Intent(getActivity(), ViewAdsInCategoryActivity.class);
+					intent.putExtra(ViewAdsInCategoryActivity.CATEGORY_PARAM, cat);
+					startActivity(intent);
+				}
+			});
 			return rootView;
 		}
 		
-		private List<String> buildLabels(Map<String,List<Advertisement>> map) {
+		private List<String> buildLabels(Map<String,List<PlainAdvertisement>> map) {
 			List<String> labels = Lists.newArrayList();
 			for(String cat: map.keySet()) { 
 				labels.add(cat + " ("+ map.get(cat).size() + ")");
@@ -203,48 +216,11 @@ public class MainActivity extends FragmentActivity implements
 			return labels;
 		}
 
-		private Map<String, List<Advertisement>> buildAdsByCategoryMap() {
-			Map<String, List<Advertisement>> result = Maps.newHashMap();
-			RestoARService service = RestoARCacheService.getINSTANCE();
-			for(String category : service.getCategories()) {
-				result.put(category, new ArrayList<Advertisement>());
-			}
-			for(Advertisement ad : service.getAdvertisements()) { 
-				result.get(ad.getCategory()).add(ad);
-			}
-			return result;
-		}
-
 		@Override
 		public void onAttach(Activity activity) {
 			super.onAttach(activity);
 			this.context = activity;
 		}
-	}
-
-	private static class StableArrayAdapter extends ArrayAdapter<String> {
-
-		HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
-
-		public StableArrayAdapter(Context context, int textViewResourceId,
-				List<String> objects) {
-			super(context, textViewResourceId, objects);
-			for (int i = 0; i < objects.size(); ++i) {
-				mIdMap.put(objects.get(i), i);
-			}
-		}
-
-		@Override
-		public long getItemId(int position) {
-			String item = getItem(position);
-			return mIdMap.get(item);
-		}
-
-		@Override
-		public boolean hasStableIds() {
-			return true;
-		}
-
 	}
 
 	public static class Nearby extends Fragment {
@@ -268,8 +244,8 @@ public class MainActivity extends FragmentActivity implements
 			});
 			ListView list = (ListView) rootView
 					.findViewById(R.id.nearby_restaurants_lits);
-			List<Advertisement> ads = RestoARCacheService.getINSTANCE()
-					.getAdvertisements();
+			List<PlainAdvertisement> ads = RestoARCacheService.getINSTANCE()
+					.getPlainAdvertisements();
 			Collections.sort(ads, new AdComparator());
 
 			LocationManager locationMgr = (LocationManager) context
@@ -279,8 +255,8 @@ public class MainActivity extends FragmentActivity implements
             final Location userLocation = (gps != null) ? gps : network;
             
 			Collection<String> strings = Collections2.transform(ads,
-					new Function<Advertisement, String>() {
-						public String apply(Advertisement ad) {
+					new Function<PlainAdvertisement, String>() {
+						public String apply(PlainAdvertisement ad) {
 							float[] results = new float[1];
 							Location.distanceBetween(ad.getLatitude(),
 									userLocation.getLatitude(),
@@ -306,12 +282,34 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	public static class SearchByTag extends Fragment {
+		
+		private Activity context;
+
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.search_by_tag, container,
 					false);
+			Button button = (Button) rootView.findViewById(R.id.buttonBuscar);
+			final TextView tv  = (TextView) rootView.findViewById(R.id.searchField);
+			button.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					String textToSearch = tv.getText().toString();
+					if (!"".equalsIgnoreCase(textToSearch)) {
+						Intent intent = new Intent(context, SearchResultsActivity.class);
+						intent.putExtra(SearchResultsActivity.SEARCH_PARAM, textToSearch);
+						startActivity(intent);
+					}
+				}
+			});
 			return rootView;
+		}
+		
+		@Override
+		public void onAttach(Activity activity) {
+			super.onAttach(activity);
+			this.context = activity;
 		}
 	}
 
