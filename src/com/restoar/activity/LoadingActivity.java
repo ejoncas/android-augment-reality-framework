@@ -2,9 +2,11 @@ package com.restoar.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import com.restoar.R;
+import com.restoar.data.service.LocationHelper;
 import com.restoar.data.service.RestoARCacheService;
 import com.restoar.util.SystemUiHider;
 
@@ -20,8 +22,23 @@ public class LoadingActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_loading);
-		load();
-		next();
+		new AsyncTask<Void, Void, Void>() {
+			
+			protected void onPreExecute() {
+				LocationHelper.getInstance(getApplicationContext()).start();
+				load();
+			};
+
+			@Override
+			protected Void doInBackground(Void... params) {
+				return null;
+			}
+			
+			protected void onPostExecute(Void result) {
+				next();
+			};
+			
+		}.execute();
 	}
 	
 	private void next() {

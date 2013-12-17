@@ -33,12 +33,8 @@ public class RestoARCacheService implements RestoARService {
 		return INSTANCE;
 	}
 
-	public RestoARCacheService(RestoARService cachedService) {
-		this.cachedService = cachedService;
-	}
-
-	public RestoARCacheService() {
-		this(new RestoARApiService());
+	public RestoARCacheService(RestoARService cache) {
+		this.cachedService = cache;
 		this.cache = CacheBuilder.newBuilder()
 				.expireAfterWrite(10, TimeUnit.MINUTES)
 				.build(new CacheLoader<String, Object>() {
@@ -63,6 +59,10 @@ public class RestoARCacheService implements RestoARService {
 						return null;
 					}
 				});
+	}
+
+	public RestoARCacheService() {
+		this(new RestoARApiService());
 	}
 
 	@Override

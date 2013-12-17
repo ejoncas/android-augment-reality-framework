@@ -1,5 +1,6 @@
 package com.restoar.activity;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -10,16 +11,15 @@ import java.util.Map;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -33,11 +33,10 @@ import android.widget.TextView;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.restoar.R;
 import com.restoar.activity.views.StableArrayAdapter;
+import com.restoar.data.service.LocationHelper;
 import com.restoar.data.service.RestoARCacheService;
-import com.restoar.model.Advertisement;
 import com.restoar.model.PlainAdvertisement;
 
 public class MainActivity extends FragmentActivity implements
@@ -189,8 +188,9 @@ public class MainActivity extends FragmentActivity implements
 
 			ListView list = (ListView) rootView
 					.findViewById(R.id.listCategories);
-			final Map<String,List<PlainAdvertisement>> adsMap = RestoARCacheService.getINSTANCE().getCategoriesMap();
-			
+			final Map<String, List<PlainAdvertisement>> adsMap = RestoARCacheService
+					.getINSTANCE().getCategoriesMap();
+
 			final StableArrayAdapter adapter = new StableArrayAdapter(context,
 					android.R.layout.simple_list_item_1, buildLabels(adsMap));
 			list.setAdapter(adapter);
@@ -199,19 +199,23 @@ public class MainActivity extends FragmentActivity implements
 				public void onItemClick(AdapterView<?> arg0, View arg1,
 						int arg2, long arg3) {
 					String category = adapter.getItem(arg2);
-					String cat = category.substring(0, category.indexOf("(")).trim();
-					Intent intent = new Intent(getActivity(), ViewAdsInCategoryActivity.class);
-					intent.putExtra(ViewAdsInCategoryActivity.CATEGORY_PARAM, cat);
+					String cat = category.substring(0, category.indexOf("("))
+							.trim();
+					Intent intent = new Intent(getActivity(),
+							ViewAdsInCategoryActivity.class);
+					intent.putExtra(ViewAdsInCategoryActivity.CATEGORY_PARAM,
+							cat);
 					startActivity(intent);
 				}
 			});
 			return rootView;
 		}
-		
-		private List<String> buildLabels(Map<String,List<PlainAdvertisement>> map) {
+
+		private List<String> buildLabels(
+				Map<String, List<PlainAdvertisement>> map) {
 			List<String> labels = Lists.newArrayList();
-			for(String cat: map.keySet()) { 
-				labels.add(cat + " ("+ map.get(cat).size() + ")");
+			for (String cat : map.keySet()) {
+				labels.add(cat + " (" + map.get(cat).size() + ")");
 			}
 			return labels;
 		}
@@ -246,24 +250,26 @@ public class MainActivity extends FragmentActivity implements
 					.findViewById(R.id.nearby_restaurants_lits);
 			List<PlainAdvertisement> ads = RestoARCacheService.getINSTANCE()
 					.getPlainAdvertisements();
-			Collections.sort(ads, new AdComparator());
 
-			LocationManager locationMgr = (LocationManager) context
-					.getSystemService(Context.LOCATION_SERVICE);
-			Location gps = locationMgr.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            Location network = locationMgr.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            final Location userLocation = (gps != null) ? gps : network;
-            
+			final Location userLocation = LocationHelper.getInstance(
+					getActivity()).getLastKnownLocation();
+
+			Collections.sort(ads, new AdComparator(userLocation));
+			Log.i("RestoarLocation",
+					"Current location is " + userLocation.toString());
+
+			final NumberFormat nf = NumberFormat.getInstance(Locale.US);
 			Collection<String> strings = Collections2.transform(ads,
 					new Function<PlainAdvertisement, String>() {
 						public String apply(PlainAdvertisement ad) {
 							float[] results = new float[1];
 							Location.distanceBetween(ad.getLatitude(),
-									userLocation.getLatitude(),
 									ad.getLongitude(),
+									userLocation.getLatitude(),
 									userLocation.getLongitude(), results);
-							return ad.getTitle() + " \t" + results[0]
-									+ "m";
+							int distanceInMeters = ((int) results[0]);
+							return ad.getTitle() + " \t"
+									+ nf.format(distanceInMeters) + " m";
 						}
 					});
 			final StableArrayAdapter adapter = new StableArrayAdapter(context,
@@ -282,7 +288,7 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	public static class SearchByTag extends Fragment {
-		
+
 		private Activity context;
 
 		@Override
@@ -291,21 +297,24 @@ public class MainActivity extends FragmentActivity implements
 			View rootView = inflater.inflate(R.layout.search_by_tag, container,
 					false);
 			Button button = (Button) rootView.findViewById(R.id.buttonBuscar);
-			final TextView tv  = (TextView) rootView.findViewById(R.id.searchField);
+			final TextView tv = (TextView) rootView
+					.findViewById(R.id.searchField);
 			button.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					String textToSearch = tv.getText().toString();
 					if (!"".equalsIgnoreCase(textToSearch)) {
-						Intent intent = new Intent(context, SearchResultsActivity.class);
-						intent.putExtra(SearchResultsActivity.SEARCH_PARAM, textToSearch);
+						Intent intent = new Intent(context,
+								SearchResultsActivity.class);
+						intent.putExtra(SearchResultsActivity.SEARCH_PARAM,
+								textToSearch);
 						startActivity(intent);
 					}
 				}
 			});
 			return rootView;
 		}
-		
+
 		@Override
 		public void onAttach(Activity activity) {
 			super.onAttach(activity);
