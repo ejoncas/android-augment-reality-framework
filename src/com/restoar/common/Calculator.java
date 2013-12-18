@@ -28,6 +28,7 @@ import com.restoar.activity.AugmentedReality;
  * 
  * @author Daniele Gobbetti <info@mixare.org>
  * @author Justin Wetherell <phishman3579@gmail.com>
+ * @author jonatancastrocrespin
  */
 public class Calculator {
 

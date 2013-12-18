@@ -1,42 +1,17 @@
-android-augment-reality-framework
-=================================
+RestoAR
+=======
 
-A framework for creating augmented reality Apps on Android
+Aplicación android que muestra restaurantes haciendo uso de realidad aumentada.
 
-## Introduction
+Este es un prototipo realizado por:
 
-All the pieces needed to create an augmented reality App on Android.
+* Juan Pablo Rennis - LU: 124188
+* Jonatan Castro Crespin - LU: 124374
 
-* Created by Justin Wetherell
-* Google:   http://code.google.com/p/android-augment-reality-framework
-* Github:   http://github.com/phishman3579/android-augment-reality-framework
-* LinkedIn: http://www.linkedin.com/in/phishman3579
-* E-mail:   phishman3579@gmail.com
-* Twitter:  http://twitter.com/phishman3579
+Esta aplicación es parte del Proyecto Final de Ingeniería llamado
 
-## Details
+"Marketing 3.0 Basado en Realidad Aumentada"
 
-This will walk you through creating your own augmented reality Android App using this framework.
+Repositorio actualizado: https://github.com/ejoncas/android-augment-reality-framework
 
-All you have to do to display your own data in this augmented reality App is:
-
-Extend the DataSource class to support getting information for your data.
-
-Extend the AugmentedReality class to get the data and add it to the App. Or you could just use the Demo class and add your new data source to the existing data structure.
-
-That's it...
-
-In the source code I have also created an example that follows the strategy above. The files are:
-
-* Demo.java
-
-* TwitterDataSource.java
-
-* WikipediaDataSource.java
-
-* BuzzDataSource.java
-
-* LocalDataSource.java
-
-You can use them as a reference to create your own augmented reality App based on this framework.
-
+Esta basado en un proyecto open source con licencia GPL hosteado en: https://github.com/phishman3579/android-augment-reality-framework

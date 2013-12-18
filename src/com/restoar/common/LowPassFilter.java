@@ -11,6 +11,7 @@ import android.util.FloatMath;
  * audio applications.
  * 
  * @author Justin Wetherell (phishman3579@gmail.com)
+ * @author jonatancastrocrespin
  */
 public class LowPassFilter {
 

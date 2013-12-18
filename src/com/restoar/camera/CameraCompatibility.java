@@ -9,16 +9,6 @@ import android.content.Context;
 import android.hardware.Camera;
 import android.view.Display;
 import android.view.WindowManager;
-
-/**
- * Ensures compatibility with older and newer versions of the API. See the SDK
- * docs for comments
- * 
- * This file was adapted from Mixare <http://www.mixare.org/>
- * 
- * @author Daniele Gobbetti <info@mixare.org>
- * @author Justin Wetherell <phishman3579@gmail.com>
- */
 public class CameraCompatibility {
 
     private static Method getSupportedPreviewSizes = null;
