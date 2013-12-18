@@ -25,7 +25,6 @@ import android.widget.Toast;
 
 import com.restoar.R;
 import com.restoar.data.ARData;
-import com.restoar.data.LocalDataSource;
 import com.restoar.data.NetworkDataSource;
 import com.restoar.data.RestoARDataSource;
 import com.restoar.ui.Marker;
@@ -69,9 +68,8 @@ public class AugmentedRealityActivity extends AugmentedReality {
         // Setting duration and displaying the toast
         myToast.setDuration(Toast.LENGTH_SHORT);
 
-        // Local
-        LocalDataSource localData = new LocalDataSource(this.getResources());
-        ARData.addMarkers(localData.getMarkers());
+//        LocalDataSource localData = new LocalDataSource(this.getResources());
+//        ARData.addMarkers(localData.getMarkers());
 
         sources.put("restoarDataSource", new RestoARDataSource(getResources()));
     }

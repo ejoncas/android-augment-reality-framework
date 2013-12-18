@@ -50,7 +50,7 @@ public class RestoARApiService implements RestoARService {
 		return commerces;
 	}
 	
-	private List<Commerce> parseCommerces(JSONObject root) {
+	public List<Commerce> parseCommerces(JSONObject root) {
 		if (root == null)
 			throw new NullPointerException();
 
@@ -93,7 +93,7 @@ public class RestoARApiService implements RestoARService {
 				String category = jo.has("category") ? jo.getString("category")
 						: DEFAULT_CATEFORY;
 				Long id = jo.getLong("id");
-				String address = jo.has("adress") ? jo.getString("address")
+				String address = jo.has("address") ? jo.getString("address")
 						: "FIXME";
 				commerce = new Commerce(id, title, description, address, category, lat, lon);
 				if (jo.has("advertisements")) { 

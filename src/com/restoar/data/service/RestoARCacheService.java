@@ -36,7 +36,7 @@ public class RestoARCacheService implements RestoARService {
 	public RestoARCacheService(RestoARService cache) {
 		this.cachedService = cache;
 		this.cache = CacheBuilder.newBuilder()
-				.expireAfterWrite(10, TimeUnit.MINUTES)
+				.expireAfterWrite(60, TimeUnit.MINUTES)
 				.build(new CacheLoader<String, Object>() {
 					@Override
 					public Object load(String arg0) throws Exception {

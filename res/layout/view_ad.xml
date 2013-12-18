@@ -34,8 +34,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/title"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="46dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="15dp"
         android:text="Medium Text"
+        android:textAlignment="center"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
@@ -56,26 +58,22 @@
         android:text="Small Text"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
-    <LinearLayout
+    <fragment
+        android:id="@+id/map"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/ratingBar1"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/address"
-        android:orientation="vertical" >
+        android:layout_weight="0.54"
+        class="com.google.android.gms.maps.MapFragment" />
 
-        <fragment
-            android:id="@+id/map"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="0.54"
-            class="com.google.android.gms.maps.MapFragment" />
+    <RatingBar
+        android:id="@+id/ratingBar1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:numStars="5" />
 
-        <RatingBar
-            android:id="@+id/ratingBar1"
-            android:layout_width="match_parent"
-            android:numStars="5"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-    
 </RelativeLayout>

@@ -13,7 +13,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 
+import com.google.common.collect.Lists;
 import com.restoar.R;
+import com.restoar.model.Advertisement;
 import com.restoar.ui.IconMarker;
 import com.restoar.ui.Marker;
 
@@ -21,7 +23,7 @@ import com.restoar.ui.Marker;
  */
 public class RestoARDataSource extends NetworkDataSource {
 
-    private static final String URL = "http://www.restoar.com.ar/api/advertisement/all";
+    private static final String URL = "http://www.restoar.com.ar/api/commerce/all";
 
     private static Bitmap icon = null;
 
@@ -85,8 +87,8 @@ public class RestoARDataSource extends NetworkDataSource {
             if (dataArray == null) return markers;
             for (int i = 0; i < dataArray.length(); i++) {
                 jo = dataArray.getJSONObject(i);
-                Marker ma = processJSONObject(jo);
-                if (ma != null) markers.add(ma);
+                List<Marker> mas = processADS(jo);
+                if (mas != null) markers.addAll(mas);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -94,29 +96,51 @@ public class RestoARDataSource extends NetworkDataSource {
         return markers;
     }
 
-    private Marker processJSONObject(JSONObject jo) {
-        if (jo == null) throw new NullPointerException();
-
-        if (!jo.has("location")) throw new NullPointerException();
-
-        Marker ma = null;
-        try {
-            Double lat = null, lon = null;
-            if (!jo.isNull("location")) {
-                JSONObject geo = jo.getJSONObject("location");
-                lat = Double.parseDouble(geo.getString("latitude"));
-                lon = Double.parseDouble(geo.getString("longitude"));
-            } 
-            if (lat != null) {
-            	String title = jo.getString("title");
-            	String description = jo.getString("description");
-            	String id = jo.getString("id");
-                ma = new IconMarker(title + "\n" + description, lat, lon, 0, Color.RED, icon);
-                ma.setObjectId(id);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return ma;
-    }
+    private List<Marker> processADS(JSONObject jo) {
+    	List<Marker> markers = Lists.newArrayList();
+    	if (jo == null)
+			throw new NullPointerException();
+		if (!jo.has("location"))
+			throw new NullPointerException();
+		try {
+			Double lat = null, lon = null;
+			if (!jo.isNull("location")) {
+				JSONObject geo = jo.getJSONObject("location");
+				lat = Double.parseDouble(geo.getString("latitude"));
+				lon = Double.parseDouble(geo.getString("longitude"));
+			}
+			if (lat != null && lon != null) {
+				String title = jo.getString("name");
+				String description = jo.getString("description");
+				if (jo.has("advertisements")) { 
+					JSONArray ads = jo.getJSONArray("advertisements");
+					for (int i = 0; i < ads.length(); i++) {
+						JSONObject ad = ads.getJSONObject(i);
+						Advertisement adBean = parseAd(ad);
+						Marker ma = new IconMarker(title + "\n" + description, lat, lon, 0, Color.RED, icon);
+		                ma.setObjectId(adBean.getId());
+		                markers.add(ma);
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return markers;
+	}
+    
+	private Advertisement parseAd(JSONObject jo) {
+		if (jo == null)
+			throw new NullPointerException();
+		Advertisement ad = null;
+		try {
+				String title = jo.getString("title");
+				String description = jo.getString("description");
+				String id = jo.getString("id");
+				ad = new Advertisement(id, title, description);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ad;
+	}
 }

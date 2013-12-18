@@ -47,6 +47,7 @@ public class AdListAdapter extends BaseAdapter {
 		}
 		((TextView)itemView.findViewById(R.id.item_title)).setText(ads.get(pos).getTitle());
 		((TextView)itemView.findViewById(R.id.item_subtitle)).setText(ads.get(pos).getDescription());
+		itemView.setTag(ads.get(pos).getId());
 		return itemView;
 	}
 

@@ -1,8 +1,5 @@
 package com.restoar.activity;
 
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -30,10 +27,9 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.restoar.R;
+import com.restoar.activity.views.NearbyAdListAdapter;
 import com.restoar.activity.views.StableArrayAdapter;
 import com.restoar.data.service.LocationHelper;
 import com.restoar.data.service.RestoARCacheService;
@@ -215,7 +211,10 @@ public class MainActivity extends FragmentActivity implements
 				Map<String, List<PlainAdvertisement>> map) {
 			List<String> labels = Lists.newArrayList();
 			for (String cat : map.keySet()) {
-				labels.add(cat + " (" + map.get(cat).size() + ")");
+				int size = map.get(cat).size();
+				if (size > 0) {
+					labels.add(cat + " (" + size + ")");
+				}
 			}
 			return labels;
 		}
@@ -257,25 +256,18 @@ public class MainActivity extends FragmentActivity implements
 			Collections.sort(ads, new AdComparator(userLocation));
 			Log.i("RestoarLocation",
 					"Current location is " + userLocation.toString());
-
-			final NumberFormat nf = NumberFormat.getInstance(Locale.US);
-			Collection<String> strings = Collections2.transform(ads,
-					new Function<PlainAdvertisement, String>() {
-						public String apply(PlainAdvertisement ad) {
-							float[] results = new float[1];
-							Location.distanceBetween(ad.getLatitude(),
-									ad.getLongitude(),
-									userLocation.getLatitude(),
-									userLocation.getLongitude(), results);
-							int distanceInMeters = ((int) results[0]);
-							return ad.getTitle() + " \t"
-									+ nf.format(distanceInMeters) + " m";
-						}
-					});
-			final StableArrayAdapter adapter = new StableArrayAdapter(context,
-					android.R.layout.simple_list_item_1, new ArrayList<String>(
-							strings));
+			
+			final NearbyAdListAdapter adapter = new NearbyAdListAdapter(context, userLocation, ads);
 			list.setAdapter(adapter);
+			list.setOnItemClickListener(new OnItemClickListener() {
+				@Override
+				public void onItemClick(AdapterView<?> arg0, View arg1,
+						int arg2, long arg3) {
+					Intent intent = new Intent(context, ViewAdActivity.class);
+					intent.putExtra(ViewAdActivity.ID_PARAM, (String) arg1.getTag());
+					startActivity(intent);
+				}
+			});
 			return rootView;
 		}
 
