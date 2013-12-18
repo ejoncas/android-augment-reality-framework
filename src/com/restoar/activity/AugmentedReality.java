@@ -61,7 +61,8 @@ public class AugmentedReality extends SensorsActivity implements OnTouchListener
     /**
      * {@inheritDoc}
      */
-    @Override
+    @SuppressWarnings("deprecation")
+	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -200,7 +201,6 @@ public class AugmentedReality extends SensorsActivity implements OnTouchListener
         return super.onTouchEvent(me);
     };
 
-    @SuppressWarnings("unused") 
     protected void markerTouched(Marker marker) {
         Log.w(TAG, "markerTouched() not implemented.");
     }
